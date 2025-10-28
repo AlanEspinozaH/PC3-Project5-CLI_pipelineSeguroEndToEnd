@@ -1,0 +1,47 @@
+# Python/venv
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage*
+htmlcov/
+
+# IDE/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs/artefactos
+*.log
+*.bin
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+# ¡Sí versiona el lock!
+!.terraform.lock.hcl
+plan.bin
+plan.json
+
+# Docker/otros
+data/
+!data/.gitkeep
+
+# Secrets
+.env
+*.key
+*.age.key
+secrets/*.plain
+secrets/*_decrypted.*
