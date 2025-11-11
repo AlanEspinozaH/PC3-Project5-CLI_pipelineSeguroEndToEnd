@@ -40,7 +40,3 @@ class Ed25519SignerAdapter(SignerPort):
             return True
         except Exception:
             return False
-
-
-# la pruebas make fmt y cov corrieron correctamente, pero tenemos un 56% de  cobertura ya que las pruebas
-# para config_port.py y leager_port.py no se han implementado aun.

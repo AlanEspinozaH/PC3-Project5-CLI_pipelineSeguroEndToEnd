@@ -15,7 +15,7 @@ def test_signer_roundtrip():
     2. Verifica la firma con la clave pública.
     """
     # 1. Arrange (Preparar)
-    # [cite_start]¡Aquí está el truco anti-bloqueo! [cite: 7]
+    # ¡Aquí está el truco anti-bloqueo!
     # Creamos un MOCK (un doble) de SecretsPort.
     mock_secrets_port = Mock(spec=SecretsPort)
     # Configuramos el mock para que devuelva nuestra semilla falsa
