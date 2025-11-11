@@ -1,0 +1,3 @@
+# src/ports/clock_port.py
+class ClockPort:
+    def now_iso(self) -> str: ...
