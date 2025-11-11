@@ -9,7 +9,7 @@ from src.ports.ledger_port import Receipt
 
 # Esta es una fixture de pytest. 'tmp_path' crea un directorio
 # temporal único para esta prueba, asegurando que cada
-# [cite_start]prueba tenga una base de datos limpia. [cite: 7]
+# prueba tenga una base de datos limpia.
 @pytest.fixture
 def temp_db_path(tmp_path):
     db_file = tmp_path / "test_ledger.db"
