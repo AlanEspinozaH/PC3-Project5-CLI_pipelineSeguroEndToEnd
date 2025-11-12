@@ -3,8 +3,6 @@ import os
 import subprocess
 
 from src.ports.secrets_port import SecretsPort
-
-
 class AgeSecretsAdapter(SecretsPort):
     def __init__(
         self,
