@@ -1,6 +1,5 @@
 from src.adapters.age_secrets_adapter import AgeSecretsAdapter
 
-
 secrets_file = "secrets.v1.age"
 identity_file = "secrets/age-identities.txt"
 
