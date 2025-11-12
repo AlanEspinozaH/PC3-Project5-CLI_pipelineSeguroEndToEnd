@@ -27,64 +27,15 @@ venv:
 tools: venv
 	# Asegura repo git (necesario para pre-commit install)
 	@git rev-parse --git-dir >/dev/null 2>&1 || git init -b main
-
-	@echo "==> Instalando herramientas de Python..."
-	@$(ACT) && $(PIP) install -U pytest pytest-cov ruff black isort pre-commit coverage
-
-	@echo "==> Verificando binarios de DevSecOps..."
-
-	# ----- gitleaks (instala desde Releases, no desde main/install.sh) -----
-	@if ! command -v gitleaks >/dev/null; then \
-	  echo "[gitleaks] instalando última versión..."; \
-	  OS=$$(uname -s | tr '[:upper:]' '[:lower:]'); \
-	  ARCH=$$(uname -m); \
-	  case "$$ARCH" in x86_64|amd64) ARCH="x64";; aarch64|arm64) ARCH="arm64";; *) ARCH="x64";; esac; \
-	  VER=$$(curl -fsSL https://api.github.com/repos/gitleaks/gitleaks/releases/latest | grep -Po '"tag_name":\s*"\K[^"]+'); \
-	  VER_NOV=$${VER#v}; \
-	  URL="https://github.com/gitleaks/gitleaks/releases/download/$$VER/gitleaks_$${VER_NOV}_$${OS}_$${ARCH}.tar.gz"; \
-	  echo "[gitleaks] $$URL"; \
-	  curl -fsSL "$$URL" -o /tmp/gitleaks.tgz; \
-	  tar -xzf /tmp/gitleaks.tgz -C /tmp gitleaks || { echo "Fallo al extraer gitleaks"; exit 1; }; \
-	  if command -v sudo >/dev/null; then sudo install -m 0755 /tmp/gitleaks /usr/local/bin/gitleaks; \
-	  else mkdir -p $$HOME/.local/bin && install -m 0755 /tmp/gitleaks $$HOME/.local/bin/gitleaks && echo '>> Añade $$HOME/.local/bin al PATH'; fi; \
-	  rm -f /tmp/gitleaks /tmp/gitleaks.tgz; \
-	fi
-	# Docs oficiales: Releases/README. (brew/docker/go también valen)
-	# https://github.com/gitleaks/gitleaks  :contentReference[oaicite:2]{index=2}
-
-	# ----- tfsec (script oficial linux, requiere bash) -----
-	@if ! command -v tfsec >/dev/null; then \
-	  echo "[tfsec] instalando..."; \
-	  curl -fsSL https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash; \
-	fi
-	# https://aquasecurity.github.io/tfsec/... (brew/choco/scoop/go también)  :contentReference[oaicite:3]{index=3}
-
-	# ----- tflint (script oficial linux) -----
-	@if ! command -v tflint >/dev/null; then \
-	  echo "[tflint] instalando..."; \
-	  curl -fsSL https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash; \
-	fi
-	# https://github.com/terraform-linters/tflint  :contentReference[oaicite:4]{index=4}
-
-	# ----- conftest (OPA) - última versión desde Releases -----
-	@if ! command -v conftest >/dev/null; then \
-	  echo "[conftest] instalando última versión..."; \
-	  VER=$$(curl -fsSL https://api.github.com/repos/open-policy-agent/conftest/releases/latest | grep -Po '"tag_name":\s*"\K[^"]+'); \
-	  OS=$$(uname -s | tr '[:upper:]' '[:lower:]'); \
-	  ARCH=$$(uname -m); \
-	  case "$$ARCH" in x86_64|amd64) ARCH="x86_64";; aarch64|arm64) ARCH="arm64";; *) ARCH="x86_64";; esac; \
-	  URL="https://github.com/open-policy-agent/conftest/releases/download/$$VER/conftest_$${VER#v}_$${OS}_$${ARCH}.tar.gz"; \
-	  echo "[conftest] $$URL"; \
-	  curl -fsSL "$$URL" -o /tmp/conftest.tgz; \
-	  tar -xzf /tmp/conftest.tgz -C /tmp conftest || { echo "Fallo al extraer conftest"; exit 1; }; \
-	  if command -v sudo >/dev/null; then sudo install -m 0755 /tmp/conftest /usr/local/bin/conftest; \
-	  else mkdir -p $$HOME/.local/bin && install -m 0755 /tmp/conftest $$HOME/.local/bin/conftest && echo '>> Añade $$HOME/.local/bin al PATH'; fi; \
-	  rm -f /tmp/conftest /tmp/conftest.tgz; \
-	fi
-	# https://www.conftest.dev/install/ y Releases  :contentReference[oaicite:5]{index=5}
-
-	@echo "==> Instalando pre-commit hooks..."
-	@if git rev-parse --git-dir >/dev/null 2>&1; then $(ACT) && pre-commit install; fi
+	# Python tooling
+	@$(ACT) && $(PIP) install -U pytest pytest-cov ruff black isort pre-commit conftest
+	@$(ACT) && $(PIP) install -U coverage
+	# CLI scanners/linters (instala solo si faltan)
+	@if ! command -v gitleaks >/dev/null; then curl -sSL https://raw.githubusercontent.com/gitleaks/gitleaks/master/scripts/install.sh | bash; fi
+	@if ! command -v tfsec >/dev/null; then curl -sSfL https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | sh; fi
+	@if ! command -v tflint >/dev/null; then curl -sSfL https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash; fi
+	# Hook de pre-commit (solo si hay .git)
+	@if git rev-parse --git-dir >/dev/null 2>&1; then pre-commit install; fi
 
 # ==== Calidad de código ====
 .PHONY: fmt
