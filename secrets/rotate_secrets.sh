@@ -8,3 +8,4 @@ age -r $(cat secrets/age-identities.txt) -o secrets.v${next_version}.age secrets
 ln -sf secrets.v${next_version}.age secrets.current.age
 
 echo "Rotación completada: secretos.v${next_version}.age creado y symlink actualizado a secrets.current.age"
+
